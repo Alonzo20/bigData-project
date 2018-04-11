@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+/** */
 /**
  * * 用来读取QQwry.dat文件，以根据ip获得好友位置，QQwry.dat的格式是 一. 文件头，共8字节 1. 第一个起始IP的绝对偏移， 4字节
  * 2. 最后一个起始IP的绝对偏移， 4字节 二. "结束地址/国家/区域"记录区 四字节ip地址后跟的每一条记录分成两个部分 1. 国家记录 2.
@@ -26,12 +27,12 @@ import java.util.List;
  * @author alonzo
  */
 public class IPSeeker {
-	// 一些固定常量，比如记录长度等等
+    // 一些固定常量，比如记录长度等等
     private static final int IP_RECORD_LENGTH = 7;
     private static final byte AREA_FOLLOWED = 0x01;
     private static final byte NO_AREA = 0x2;
-    
- // 用来做为cache，查询一个ip时首先查看cache，以减少不必要的重复查找
+
+    // 用来做为cache，查询一个ip时首先查看cache，以减少不必要的重复查找
     private Hashtable ipCache;
     // 随机文件访问类
     private RandomAccessFile ipFile;
@@ -58,7 +59,7 @@ public class IPSeeker {
         b4 = new byte[4];
         b3 = new byte[3];
         try {
-            String ipFilePath = IPSeeker.class.getResource("qqwry.dat").getFile();
+            String ipFilePath = IPSeeker.class.getResource("/qqwry.dat").getFile();
             ipFile = new RandomAccessFile(ipFilePath, "r");
         } catch (FileNotFoundException e) {
             System.out.println("IP地址信息文件没有找到，IP显示功能将无法使用");
@@ -683,7 +684,7 @@ public class IPSeeker {
     /**
      * 操作工具类
      * 
-     * @author alonzo
+     * @author gerryliu
      * 
      */
     public static class IPSeekerUtils {
@@ -802,5 +803,4 @@ public class IPSeeker {
 		}
 		return list;
 	}
-	
 }
