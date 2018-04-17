@@ -26,6 +26,14 @@
 		</dependency>
 		<!-- hbase end -->
 
+		<!-- mysql start -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.18</version>
+		</dependency>
+		<!-- mysql end -->
+
 		<dependency>
 			<groupId>cz.mallat.uasparser</groupId>
 			<artifactId>uasparser</artifactId>

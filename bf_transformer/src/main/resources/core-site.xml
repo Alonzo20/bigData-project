@@ -6,7 +6,7 @@
 		<value>hdfs://hadoop:8020</value>
 	</property>
 
-	<property>
+	<!-- <property>
 		<name>mapreduce.framework.name</name>
 		<value>yarn</value>
 	</property>
@@ -17,5 +17,5 @@
 	<property>
 		<name>mapreduce.app-submission.cross-platform</name>
 		<value>true</value>
-	</property>
+	</property> -->
 </configuration>

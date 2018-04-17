@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.alonzo.common.DateEnum;
+
 /**
  * 时间控制工具类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class TimeUtil {
@@ -89,6 +91,7 @@ public class TimeUtil {
 
     /**
      * 将时间戳转换为yyyy-MM-dd格式的时间字符串
+     * 
      * @param input
      * @return
      */
@@ -140,4 +143,57 @@ public class TimeUtil {
         }
         return null;
     }
+
+    /**
+     * 从时间戳中获取需要的时间信息
+     * 
+     * @param time
+     *            时间戳
+     * @param type
+     * @return 如果没有匹配的type，抛出异常信息
+     */
+    public static int getDateInfo(long time, DateEnum type) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        if (DateEnum.YEAR.equals(type)) {
+            // 需要年份信息
+            return calendar.get(Calendar.YEAR);
+        } else if (DateEnum.SEASON.equals(type)) {
+            // 需要季度信息
+            int month = calendar.get(Calendar.MONTH) + 1;
+            if (month % 3 == 0) {
+                return month / 3;
+            }
+            return month / 3 + 1;
+        } else if (DateEnum.MONTH.equals(type)) {
+            // 需要月份信息
+            return calendar.get(Calendar.MONTH) + 1;
+        } else if (DateEnum.WEEK.equals(type)) {
+            // 需要周信息
+            return calendar.get(Calendar.WEEK_OF_YEAR);
+        } else if (DateEnum.DAY.equals(type)) {
+            return calendar.get(Calendar.DAY_OF_MONTH);
+        } else if (DateEnum.HOUR.equals(type)) {
+            return calendar.get(Calendar.HOUR_OF_DAY);
+        }
+        throw new RuntimeException("没有对应的时间类型:" + type);
+    }
+
+    /**
+     * 获取time指定周的第一天的时间戳值
+     * 
+     * @param time
+     * @return
+     */
+    public static long getFirstDayOfThisWeek(long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        cal.set(Calendar.DAY_OF_WEEK, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
 }
+

@@ -5,14 +5,14 @@ package com.alonzo.common;
  * 以及event_logs这张hbase表的结构信息<br/>
  * 用户数据参数的name名称就是event_logs的列名
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class EventLogConstants {
-    /**
+	/**
      * 事件枚举类。指定事件的名称
      * 
-     * @author gerry
+     * @author alonzo
      *
      */
     public static enum EventEnum {
@@ -115,6 +115,11 @@ public class EventLogConstants {
      * 浏览器分辨率大小
      */
     public static final String LOG_COLUMN_NAME_RESOLUTION = "b_rst";
+
+    /**
+     * 定义platform
+     */
+    public static final String LOG_COLUMN_NAME_PLATFORM = "pl";
     /**
      * 当前url
      */
