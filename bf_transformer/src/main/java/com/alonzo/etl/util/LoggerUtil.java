@@ -15,11 +15,11 @@ import com.alonzo.util.TimeUtil;
 /**
  * 处理日志数据的具体工作类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
-public class LoggerUtil {
-    private static final Logger logger = Logger.getLogger(LoggerUtil.class);
+public class LoggerUtil { 
+	private static final Logger logger = Logger.getLogger(LoggerUtil.class);
     private static IPSeekerExt ipSeekerExt = new IPSeekerExt();
 
     /**

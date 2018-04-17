@@ -1,5 +1,6 @@
 package com.alonzo.etl.util;
 
+import com.alonzo.common.GlobalConstants;
 import com.alonzo.etl.util.ip.IPSeeker;
 
 /**
@@ -11,9 +12,9 @@ import com.alonzo.etl.util.ip.IPSeeker;
  * @author alonzo
  *
  */
-public class IPSeekerExt extends IPSeeker{
+public class IPSeekerExt extends IPSeeker{ 
 	private RegionInfo DEFAULT_INFO = new RegionInfo();
-	
+
 	/**
 	 * 解析ip地址，返回该ip地址对应的国家省份信息<br/>
 	 * 如果该ip解析失败，那么直接返回默认值
@@ -22,15 +23,18 @@ public class IPSeekerExt extends IPSeeker{
 	 *            要解析的ip地址，格式为: 120.197.87.216
 	 * @return
 	 */
-	public RegionInfo analyticIp(String ip){
-		if(ip == null || ip.trim().isEmpty()){
+	public RegionInfo analyticIp(String ip) {
+		if (ip == null || ip.trim().isEmpty()) {
 			return DEFAULT_INFO;
 		}
-		
+
 		RegionInfo info = new RegionInfo();
 		try {
 			String country = super.getCountry(ip);
-			if(country != null && !country.trim().isEmpty()){
+			if ("局域网".equals(country)) {
+			    info.setCountry("中国");
+			    info.setProvince("上海市");
+			} else if (country != null && !country.trim().isEmpty()) {
 				// 表示该ip还一个可以解析的ip
 				country = country.trim();
 				int length = country.length();
@@ -119,7 +123,7 @@ public class IPSeekerExt extends IPSeeker{
 		}
 		return info;
 	}
-	
+
 	/**
 	 * ip地域相关的一个model
 	 * 
@@ -127,33 +131,38 @@ public class IPSeekerExt extends IPSeeker{
 	 *
 	 */
 	public static class RegionInfo {
-		public static final String DEFAULT_VALUE = "unknown"; // 默认值
+		public static final String DEFAULT_VALUE = GlobalConstants.DEFAULT_VALUE; // 默认值
 		private String country = DEFAULT_VALUE; // 国家
 		private String province = DEFAULT_VALUE; // 省份
 		private String city = DEFAULT_VALUE; // 城市
+
 		public String getCountry() {
 			return country;
 		}
+
 		public void setCountry(String country) {
 			this.country = country;
 		}
+
 		public String getProvince() {
 			return province;
 		}
+
 		public void setProvince(String province) {
 			this.province = province;
 		}
+
 		public String getCity() {
 			return city;
 		}
+
 		public void setCity(String city) {
 			this.city = city;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "RegionInfo [country=" + country + ", province=" + province + ", city=" + city + "]";
 		}
 	}
-
 }

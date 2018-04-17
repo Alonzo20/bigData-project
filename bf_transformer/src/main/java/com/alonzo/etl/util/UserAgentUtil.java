@@ -13,16 +13,16 @@ import cz.mallat.uasparser.UASparser;
  */
 public class UserAgentUtil {
 	static UASparser uasParser = null;
-	
+
 	// static 代码块, 初始化uasParser对象
-	static{
+	static {
 		try {
 			uasParser = new UASparser(OnlineUpdater.getVendoredInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 解析浏览器的user agent字符串，返回UserAgentInfo对象。<br/>
 	 * 如果user agent为空，返回null。如果解析失败，也直接返回null。
@@ -33,7 +33,7 @@ public class UserAgentUtil {
 	 */
 	public static UserAgentInfo analyticUserAgent(String userAgent) {
 		UserAgentInfo result = null;
-		if(!(userAgent == null || userAgent.trim().isEmpty())){
+		if (!(userAgent == null || userAgent.trim().isEmpty())) {
 			// 此时userAgent不为null，而且不是由全部空格组成的
 			try {
 				cz.mallat.uasparser.UserAgentInfo info = null;
@@ -50,11 +50,11 @@ public class UserAgentUtil {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 内部解析后的浏览器信息model对象
 	 * 
-	 * @author gerry
+	 * @author alonzo
 	 *
 	 */
 	public static class UserAgentInfo {
