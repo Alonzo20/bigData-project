@@ -10,4 +10,14 @@
 		<name>collector_browser_new_install_user</name>
 		<value>com.alonzo.transformer.mr.nu.StatsDeviceBrowserNewInstallUserCollector</value>
 	</property>
+	
+	<property>
+		<name>collector_active_user</name>
+		<value>com.alonzo.transformer.mr.au.ActiveUserCollector</value>
+	</property>
+
+	<property>
+		<name>collector_browser_active_user</name>
+		<value>com.alonzo.transformer.mr.au.ActiveUserBrowserCollector</value>
+	</property>
 </configuration>
