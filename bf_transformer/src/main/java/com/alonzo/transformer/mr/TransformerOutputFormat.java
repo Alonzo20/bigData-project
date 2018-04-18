@@ -43,7 +43,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 		try {
 			conn = JdbcManager.getConnection(conf, GlobalConstants.WAREHOUSE_OF_REPORT);
 			conn.setAutoCommit(false);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("获取数据库连接失败", e);
 			throw new IOException("获取数据库连接失败", e);
 		}

@@ -30,4 +30,19 @@
 		<name>collector_browser_active_member</name>
 		<value>com.alonzo.transformer.mr.am.ActiveMemberCollector</value>
 	</property>
+	
+	<property>
+		<name>collector_new_member</name>
+		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
+	</property>	
+
+	<property>
+		<name>collector_browser_new_member</name>
+		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
+	</property>	
+
+	<property>
+		<name>collector_insert_member_info</name>
+		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
+	</property>	
 </configuration>

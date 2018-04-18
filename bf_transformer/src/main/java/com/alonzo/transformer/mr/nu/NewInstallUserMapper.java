@@ -40,7 +40,7 @@ public class NewInstallUserMapper extends TableMapper<StatsUserDimension, TimeOu
 		String uuid = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_UUID)));
 		String serverTime = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_SERVER_TIME)));
 		String platform = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_PLATFORM)));
-		if (StringUtils.isBlank(uuid) || StringUtils.isBlank(serverTime)) {
+		if (StringUtils.isBlank(uuid) || StringUtils.isBlank(serverTime) || StringUtils.isBlank(platform)) {
 			logger.warn("uuid&servertime&platform不能为空");
 			return;
 		}

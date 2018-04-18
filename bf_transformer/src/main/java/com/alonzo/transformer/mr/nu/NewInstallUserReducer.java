@@ -38,7 +38,7 @@ public class NewInstallUserReducer extends Reducer<StatsUserDimension, TimeOutpu
 
 		// 设置kpi名称
 		String kpiName = key.getStatsCommon().getKpi().getKpiName();
-		if (KpiType.NEW_INSTALL_USER.name.endsWith(kpiName)) {
+		if (KpiType.NEW_INSTALL_USER.name.equals(kpiName)) {
 			// 计算stats_user表中的新增用户
 			outputValue.setKpi(KpiType.NEW_INSTALL_USER);
 		} else if (KpiType.BROWSER_NEW_INSTALL_USER.name.equals(kpiName)) {

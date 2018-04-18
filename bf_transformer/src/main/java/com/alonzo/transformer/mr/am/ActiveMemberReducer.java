@@ -17,7 +17,7 @@ import com.alonzo.transformer.model.value.reduce.MapWritableValue;
  * mapreduce程序中计算active member的reduce类<br/>
  * 其实就是计算每一组中去重memberid的一个个数
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveMemberReducer extends Reducer<StatsUserDimension, TimeOutputValue, StatsUserDimension, MapWritableValue> {

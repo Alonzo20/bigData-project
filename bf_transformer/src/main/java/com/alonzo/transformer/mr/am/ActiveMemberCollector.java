@@ -19,7 +19,7 @@ import com.alonzo.transformer.service.IDimensionConverter;
 /**
  * 定义具体的active member kpi的输出类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveMemberCollector implements IOutputCollector {

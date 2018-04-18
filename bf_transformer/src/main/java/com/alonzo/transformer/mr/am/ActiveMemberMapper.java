@@ -25,7 +25,7 @@ import com.alonzo.transformer.model.value.map.TimeOutputValue;
  * mapreduce程序中计算active member的mapper类<br/>
  * 其实就是按照维度信息进行分组输出
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveMemberMapper extends TableMapper<StatsUserDimension, TimeOutputValue> {

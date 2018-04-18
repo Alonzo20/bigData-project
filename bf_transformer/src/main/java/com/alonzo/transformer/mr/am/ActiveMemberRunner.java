@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
 /**
  * 统计active member数量的执行入口类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveMemberRunner implements Tool {
