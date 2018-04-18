@@ -28,7 +28,7 @@ import com.google.common.collect.Lists;
 /**
  * 统计active user的入口类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveUserRunner implements Tool {

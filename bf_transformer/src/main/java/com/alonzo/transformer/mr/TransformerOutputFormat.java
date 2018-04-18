@@ -28,7 +28,7 @@ import com.alonzo.util.JdbcManager;
 /**
  * 自定义输出到mysql的outputformat类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseStatsValueWritable> {

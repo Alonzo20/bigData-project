@@ -24,7 +24,7 @@ import com.alonzo.transformer.model.value.map.TimeOutputValue;
 /**
  * Active user的mapper类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveUserMapper extends TableMapper<StatsUserDimension, TimeOutputValue> {

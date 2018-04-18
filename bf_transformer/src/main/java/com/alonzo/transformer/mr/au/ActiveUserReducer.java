@@ -16,7 +16,7 @@ import com.alonzo.transformer.model.value.reduce.MapWritableValue;
 /**
  * 统计active user， 其实就是计算本一组中这个uuid的个数
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveUserReducer extends Reducer<StatsUserDimension, TimeOutputValue, StatsUserDimension, MapWritableValue> {
