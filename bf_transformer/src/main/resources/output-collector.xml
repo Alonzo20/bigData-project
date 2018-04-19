@@ -40,9 +40,19 @@
 		<name>collector_browser_new_member</name>
 		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
 	</property>	
-
+	
 	<property>
 		<name>collector_insert_member_info</name>
 		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
-	</property>	
+	</property>
+
+	<property>
+		<name>collector_sessions</name>
+		<value>com.alonzo.transformer.mr.sessions.SessionsCollector</value>
+	</property>
+
+	<property>
+		<name>collector_browser_sessions</name>
+		<value>com.alonzo.transformer.mr.sessions.SessionsCollector</value>
+	</property>
 </configuration>
