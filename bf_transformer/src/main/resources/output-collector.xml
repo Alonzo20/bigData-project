@@ -10,7 +10,7 @@
 		<name>collector_browser_new_install_user</name>
 		<value>com.alonzo.transformer.mr.nu.StatsDeviceBrowserNewInstallUserCollector</value>
 	</property>
-	
+
 	<property>
 		<name>collector_active_user</name>
 		<value>com.alonzo.transformer.mr.au.ActiveUserCollector</value>
@@ -20,7 +20,7 @@
 		<name>collector_browser_active_user</name>
 		<value>com.alonzo.transformer.mr.au.ActiveUserBrowserCollector</value>
 	</property>
-	
+
 	<property>
 		<name>collector_active_member</name>
 		<value>com.alonzo.transformer.mr.am.ActiveMemberCollector</value>
@@ -30,7 +30,7 @@
 		<name>collector_browser_active_member</name>
 		<value>com.alonzo.transformer.mr.am.ActiveMemberCollector</value>
 	</property>
-	
+
 	<property>
 		<name>collector_new_member</name>
 		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
@@ -40,7 +40,7 @@
 		<name>collector_browser_new_member</name>
 		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
 	</property>	
-	
+
 	<property>
 		<name>collector_insert_member_info</name>
 		<value>com.alonzo.transformer.mr.nm.NewMemberCollector</value>
@@ -55,4 +55,24 @@
 		<name>collector_browser_sessions</name>
 		<value>com.alonzo.transformer.mr.sessions.SessionsCollector</value>
 	</property>
+
+	<property>
+		<name>collector_hourly_active_user</name>
+		<value>com.alonzo.transformer.mr.au.HourlyActiveUserCollector</value>
+	</property>
+
+	<property>
+		<name>collector_hourly_sessions</name>
+		<value>com.alonzo.transformer.mr.sessions.SessionsCollector</value>
+	</property>
+
+	<property>
+		<name>collector_hourly_sessions_length</name>
+		<value>com.alonzo.transformer.mr.sessions.SessionsCollector</value>
+	</property>	
+
+	<property>
+		<name>collector_website_pageview</name>
+		<value>com.alonzo.transformer.mr.pv.PageViewCollector</value>
+	</property>	
 </configuration>
