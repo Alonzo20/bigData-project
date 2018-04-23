@@ -6,12 +6,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-import org.apache.hadoop.hbase.mapreduce.TableMapper;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Logger;
 
 import com.alonzo.common.DateEnum;
-import com.alonzo.common.EventLogConstants;
 import com.alonzo.common.KpiType;
 import com.alonzo.transformer.model.dim.StatsCommonDimension;
 import com.alonzo.transformer.model.dim.StatsUserDimension;
@@ -20,10 +17,10 @@ import com.alonzo.transformer.model.dim.base.DateDimension;
 import com.alonzo.transformer.model.dim.base.KpiDimension;
 import com.alonzo.transformer.model.dim.base.PlatformDimension;
 import com.alonzo.transformer.model.value.map.TimeOutputValue;
+import com.alonzo.transformer.mr.TransformerBaseMapper;
 
-public class SessionsMapper extends TableMapper<StatsUserDimension, TimeOutputValue> {
+public class SessionsMapper extends TransformerBaseMapper<StatsUserDimension, TimeOutputValue> {
 	private static final Logger logger = Logger.getLogger(SessionsMapper.class);
-	public static final byte[] family = Bytes.toBytes(EventLogConstants.EVENT_LOGS_FAMILY_NAME);
 	private StatsUserDimension outputKey = new StatsUserDimension();
 	private TimeOutputValue outputValue = new TimeOutputValue();
 	private BrowserDimension defaultBrowserDimension = new BrowserDimension("", "");
@@ -33,9 +30,9 @@ public class SessionsMapper extends TableMapper<StatsUserDimension, TimeOutputVa
 	@Override
 	protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
 		// 获取会话id，serverTime， 平台
-		String sessionId = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_SESSION_ID)));
-		String platform = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_PLATFORM)));
-		String serverTime = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_SERVER_TIME)));
+		String sessionId = this.getSessionId(value);
+		String platform = this.getPlatform(value);
+		String serverTime = this.getServerTime(value);
 
 		// 过滤无效数据
 		if (StringUtils.isBlank(sessionId) || StringUtils.isBlank(platform) || StringUtils.isBlank(serverTime) || !StringUtils.isNumeric(serverTime.trim())) {
@@ -48,8 +45,8 @@ public class SessionsMapper extends TableMapper<StatsUserDimension, TimeOutputVa
 		// 创建 platform维度
 		List<PlatformDimension> platforms = PlatformDimension.buildList(platform);
 		// 创建browser维度
-		String browserName = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_BROWSER_NAME)));
-		String browserVersion = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_BROWSER_VERSION)));
+		String browserName = this.getBrowserName(value);
+		String browserVersion = this.getBrowserVersion(value);
 		List<BrowserDimension> browsers = BrowserDimension.buildList(browserName, browserVersion);
 
 		// 进行输出设置

@@ -6,13 +6,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
-import org.apache.hadoop.hbase.mapreduce.TableMapper;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.log4j.Logger;
 
 import com.alonzo.common.DateEnum;
-import com.alonzo.common.EventLogConstants;
 import com.alonzo.common.KpiType;
 import com.alonzo.transformer.model.dim.StatsCommonDimension;
 import com.alonzo.transformer.model.dim.StatsUserDimension;
@@ -20,6 +17,7 @@ import com.alonzo.transformer.model.dim.base.BrowserDimension;
 import com.alonzo.transformer.model.dim.base.DateDimension;
 import com.alonzo.transformer.model.dim.base.KpiDimension;
 import com.alonzo.transformer.model.dim.base.PlatformDimension;
+import com.alonzo.transformer.mr.TransformerBaseMapper;
 
 /**
  * 统计pv的mapper类<br/>
@@ -29,18 +27,17 @@ import com.alonzo.transformer.model.dim.base.PlatformDimension;
  * @author gerry
  *
  */
-public class PageViewMapper extends TableMapper<StatsUserDimension, NullWritable> {
+public class PageViewMapper extends TransformerBaseMapper<StatsUserDimension, NullWritable> {
 	private static final Logger logger = Logger.getLogger(PageViewMapper.class);
-	public static final byte[] family = Bytes.toBytes(EventLogConstants.EVENT_LOGS_FAMILY_NAME);
 	private StatsUserDimension statsUserDimension = new StatsUserDimension();
 	private KpiDimension websitePageViewDimension = new KpiDimension(KpiType.WEBSITE_PAGEVIEW.name);
 
 	@Override
 	protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
 		// 1. 获取platform、time、url
-		String platform = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_PLATFORM)));
-		String serverTime = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_SERVER_TIME)));
-		String url = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_CURRENT_URL)));
+		String platform = this.getPlatform(value);
+		String serverTime = this.getServerTime(value);
+		String url = this.getCurrentUrl(value);
 
 		// 2. 过滤数据
 		if (StringUtils.isBlank(platform) || StringUtils.isBlank(url) || StringUtils.isBlank(serverTime) || !StringUtils.isNumeric(serverTime.trim())) {
@@ -51,8 +48,8 @@ public class PageViewMapper extends TableMapper<StatsUserDimension, NullWritable
 		// 3. 创建platform维度信息
 		List<PlatformDimension> platforms = PlatformDimension.buildList(platform);
 		// 4. 创建browser维度信息
-		String browserName = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_BROWSER_NAME)));
-		String browserVersion = Bytes.toString(value.getValue(family, Bytes.toBytes(EventLogConstants.LOG_COLUMN_NAME_BROWSER_VERSION)));
+		String browserName = this.getBrowserName(value);
+		String browserVersion = this.getBrowserVersion(value);
 		List<BrowserDimension> browsers = BrowserDimension.buildList(browserName, browserVersion);
 		// 5. 创建date维度信息
 		DateDimension dayOfDimenion = DateDimension.buildDate(Long.valueOf(serverTime.trim()), DateEnum.DAY);
@@ -62,7 +59,7 @@ public class PageViewMapper extends TableMapper<StatsUserDimension, NullWritable
 		statsCommon.setDate(dayOfDimenion); // 设置date dimension
 		statsCommon.setKpi(this.websitePageViewDimension); // 设置kpi dimension
 		for (PlatformDimension pf : platforms) {
-			statsCommon.setPlatform(pf); // 设置platform dimension
+			statsCommon.setPlatform(pf); // 设置platform dimensiono
 			for (BrowserDimension br : browsers) {
 				this.statsUserDimension.setBrowser(br); // 设置browser dimension
 				// 输出

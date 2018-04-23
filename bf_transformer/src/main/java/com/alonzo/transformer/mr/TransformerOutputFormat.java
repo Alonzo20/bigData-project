@@ -53,7 +53,6 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 	@Override
 	public void checkOutputSpecs(JobContext context) throws IOException, InterruptedException {
 		// 检测输出空间，输出到mysql不用检测
-
 	}
 
 	@Override
@@ -64,7 +63,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 	/**
 	 * 自定义具体数据输出writer
 	 * 
-	 * @author alonzo
+	 * @author gerry
 	 *
 	 */
 	public class TransformerRecordWriter extends RecordWriter<BaseDimension, BaseStatsValueWritable> {
@@ -100,7 +99,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 					count = batch.get(kpi);
 					count++;
 				}
-				batch.put(kpi, count);// 批量次数的存储
+				batch.put(kpi, count); // 批量次数的存储
 
 				String collectorName = conf.get(GlobalConstants.OUTPUT_COLLECTOR_KEY_PREFIX + kpi.name);
 				Class<?> clazz = Class.forName(collectorName);
@@ -112,7 +111,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 					conn.commit();
 					batch.remove(kpi); // 对应批量计算删除
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("在writer中写数据出现异常", e);
 				throw new IOException(e);
 			}
@@ -124,7 +123,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 				for (Map.Entry<KpiType, PreparedStatement> entry : this.map.entrySet()) {
 					entry.getValue().executeBatch();
 				}
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				logger.error("执行executeUpdate方法异常", e);
 				throw new IOException(e);
 			} finally {
@@ -151,5 +150,7 @@ public class TransformerOutputFormat extends OutputFormat<BaseDimension, BaseSta
 				}
 			}
 		}
+
 	}
+
 }

@@ -1,26 +1,18 @@
 package com.alonzo.transformer.mr.nm;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.MultipleColumnPrefixFilter;
-import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import com.alonzo.common.DateEnum;
@@ -30,10 +22,9 @@ import com.alonzo.transformer.model.dim.StatsUserDimension;
 import com.alonzo.transformer.model.dim.base.DateDimension;
 import com.alonzo.transformer.model.value.map.TimeOutputValue;
 import com.alonzo.transformer.model.value.reduce.MapWritableValue;
-import com.alonzo.transformer.mr.TransformerOutputFormat;
+import com.alonzo.transformer.mr.TransformerBaseRunner;
 import com.alonzo.util.JdbcManager;
 import com.alonzo.util.TimeUtil;
-import com.google.common.collect.Lists;
 
 /**
  * 计算新增会员的入口类
@@ -41,14 +32,16 @@ import com.google.common.collect.Lists;
  * @author alonzo
  *
  */
-public class NewMemberRunner implements Tool {
+public class NewMemberRunner extends TransformerBaseRunner {
 	private static final Logger logger = Logger.getLogger(NewMemberRunner.class);
-	private Configuration conf = null;
 
 	public static void main(String[] args) {
+		System.setProperty("hadoop.home.dir", "E:\\大数据（全）\\大数据软件工具\\hadoop-2.5.0-cdh5.3.6\\hadoop-2.5.0-cdh5.3.6");
+		NewMemberRunner runner = new NewMemberRunner();
+		runner.setupRunner("new-member", NewMemberRunner.class, NewMemberMapper.class, NewMemberReducer.class, StatsUserDimension.class, TimeOutputValue.class, StatsUserDimension.class,
+				MapWritableValue.class);
 		try {
-			System.setProperty("hadoop.home.dir", "E:\\大数据（全）\\大数据软件工具\\hadoop-2.5.0-cdh5.3.6\\hadoop-2.5.0-cdh5.3.6");
-			ToolRunner.run(new Configuration(), new NewMemberRunner(), args);
+			runner.startRunner(args);
 		} catch (Exception e) {
 			logger.error("统计新增会员&总会员失败，出现异常信息.", e);
 			throw new RuntimeException("job执行异常", e);
@@ -56,46 +49,38 @@ public class NewMemberRunner implements Tool {
 	}
 
 	@Override
-	public void setConf(Configuration conf) {
-		// 设置自定义配置信息
-		conf.addResource("output-collector.xml");
-		conf.addResource("query-mapping.xml");
-		conf.addResource("transformer-env.xml");
-		// 使用hbase的config帮助类来加载hbase相关配置文件
-		this.conf = HBaseConfiguration.create(conf);
+	protected Filter fetchHbaseFilter() {
+		FilterList filterList = new FilterList();
+		// 定义mapper中需要获取的列名
+		String[] columns = new String[] { EventLogConstants.LOG_COLUMN_NAME_MEMBER_ID, // 会员id
+				EventLogConstants.LOG_COLUMN_NAME_SERVER_TIME, // 服务器时间
+				EventLogConstants.LOG_COLUMN_NAME_PLATFORM, // 平台名称
+				EventLogConstants.LOG_COLUMN_NAME_BROWSER_NAME, // 浏览器名称
+				EventLogConstants.LOG_COLUMN_NAME_BROWSER_VERSION // 浏览器版本信息
+		};
+		filterList.addFilter(this.getColumnFilter(columns));
+		return filterList;
 	}
 
 	@Override
-	public Configuration getConf() {
-		return this.conf;
-	}
-
-	@Override
-	public int run(String[] args) throws Exception {
-		Configuration conf = this.getConf();
-		// 处理参数
-		this.processArgs(conf, args);
-
-		Job job = Job.getInstance(conf, "new_member");
-
-		// 设置job相关配置
-		job.setJarByClass(NewMemberRunner.class);
-		// 本地运行，参数为false。如果需要线上运行，设置为true。(最后一个参数)
-		TableMapReduceUtil.initTableMapperJob(this.initScans(job), NewMemberMapper.class, StatsUserDimension.class, TimeOutputValue.class, job, false);
-		job.setReducerClass(NewMemberReducer.class);
-		job.setOutputKeyClass(StatsUserDimension.class);
-		job.setOutputValueClass(MapWritableValue.class);
-
-		// 设置自定义outputformat
-		job.setOutputFormatClass(TransformerOutputFormat.class);
-		if (job.waitForCompletion(true)) {
-			// job运行成功
-			this.calculateTotalMembers(job.getConfiguration());
-			return 0;
-		} else {
-			// job运行失败
-			return -1;
+	protected void afterRunJob(Job job, Throwable error) throws IOException {
+		try {
+			if (error == null && job.isSuccessful()) {
+				// job运行没有异常，而且运行成功，那么进行计算total member的代码
+				this.calculateTotalMembers(job.getConfiguration());
+			} else if (error == null) {
+				// job运行没有产生异常，但是运行失败
+				throw new RuntimeException("job 运行失败");
+			}
+		} catch (Throwable e) {
+			if (error != null) {
+				error = e;
+			}
+			throw new IOException("调用afterRunJob产生异常", e);
+		} finally {
+			super.afterRunJob(job, error);
 		}
+
 	}
 
 	/**
@@ -232,80 +217,6 @@ public class NewMemberRunner implements Tool {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * 处理参数
-	 * 
-	 * @param conf
-	 * @param args
-	 */
-	private void processArgs(Configuration conf, String[] args) {
-		String date = null;
-		for (int i = 0; i < args.length; i++) {
-			if ("-d".equals(args[i])) {
-				if (i + 1 < args.length) {
-					date = args[++i];
-					break;
-				}
-			}
-		}
-
-		// 要求date格式为: yyyy-MM-dd
-		if (StringUtils.isBlank(date) || !TimeUtil.isValidateRunningDate(date)) {
-			// date是一个无效时间数据
-			date = TimeUtil.getYesterday(); // 默认时间是昨天
-		}
-		conf.set(GlobalConstants.RUNNING_DATE_PARAMES, date);
-	}
-
-	/**
-	 * 初始化scan集合
-	 * 
-	 * @param job
-	 * @return
-	 */
-	private List<Scan> initScans(Job job) {
-		// 时间戳+....
-		Configuration conf = job.getConfiguration();
-		// 获取运行时间: yyyy-MM-dd
-		String date = conf.get(GlobalConstants.RUNNING_DATE_PARAMES);
-		long startDate = TimeUtil.parseString2Long(date);
-		long endDate = startDate + GlobalConstants.DAY_OF_MILLISECONDS;
-
-		Scan scan = new Scan();
-		// 定义hbase扫描的开始rowkey和结束rowkey
-		scan.setStartRow(Bytes.toBytes("" + startDate));
-		scan.setStopRow(Bytes.toBytes("" + endDate));
-
-		FilterList filterList = new FilterList();
-		// 定义mapper中需要获取的列名
-		String[] columns = new String[] { EventLogConstants.LOG_COLUMN_NAME_MEMBER_ID, // 会员id
-				EventLogConstants.LOG_COLUMN_NAME_SERVER_TIME, // 服务器时间
-				EventLogConstants.LOG_COLUMN_NAME_PLATFORM, // 平台名称
-				EventLogConstants.LOG_COLUMN_NAME_BROWSER_NAME, // 浏览器名称
-				EventLogConstants.LOG_COLUMN_NAME_BROWSER_VERSION // 浏览器版本信息
-		};
-		filterList.addFilter(this.getColumnFilter(columns));
-
-		scan.setAttribute(Scan.SCAN_ATTRIBUTES_TABLE_NAME, Bytes.toBytes(EventLogConstants.HBASE_NAME_EVENT_LOGS));
-		scan.setFilter(filterList);
-		return Lists.newArrayList(scan);
-	}
-
-	/**
-	 * 获取这个列名过滤的column
-	 * 
-	 * @param columns
-	 * @return
-	 */
-	private Filter getColumnFilter(String[] columns) {
-		int length = columns.length;
-		byte[][] filter = new byte[length][];
-		for (int i = 0; i < length; i++) {
-			filter[i] = Bytes.toBytes(columns[i]);
-		}
-		return new MultipleColumnPrefixFilter(filter);
 	}
 
 }

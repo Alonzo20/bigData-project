@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.alonzo.transformer.model.dim.base.BaseDimension;
 import com.alonzo.transformer.model.dim.base.BrowserDimension;
 import com.alonzo.transformer.model.dim.base.DateDimension;
+import com.alonzo.transformer.model.dim.base.KpiDimension;
 import com.alonzo.transformer.model.dim.base.PlatformDimension;
 import com.alonzo.transformer.service.IDimensionConverter;
 
@@ -58,6 +59,8 @@ public class DimensionConverterImpl implements IDimensionConverter {
                 sql = this.buildPlatformSql();
             } else if (dimension instanceof BrowserDimension) {
                 sql = this.buildBrowserSql();
+            } else if (dimension instanceof KpiDimension) {
+                sql = this.buildKpiSql();
             } else {
                 throw new IOException("不支持此dimensionid的获取:" + dimension.getClass());
             }
@@ -113,7 +116,12 @@ public class DimensionConverterImpl implements IDimensionConverter {
             sb.append("browser_dimension");
             BrowserDimension browser = (BrowserDimension) dimension;
             sb.append(browser.getBrowserName()).append(browser.getBrowserVersion());
-        }
+        } else if (dimension instanceof KpiDimension) {
+            sb.append("kpi_dimension");
+            KpiDimension kpi = (KpiDimension) dimension;
+            sb.append(kpi.getKpiName());
+        }  
+
 
         if (sb.length() == 0) {
             throw new RuntimeException("无法创建指定dimension的cachekey：" + dimension.getClass());
@@ -146,7 +154,11 @@ public class DimensionConverterImpl implements IDimensionConverter {
             BrowserDimension browser = (BrowserDimension) dimension;
             pstmt.setString(++i, browser.getBrowserName());
             pstmt.setString(++i, browser.getBrowserVersion());
-        }
+        } else if (dimension instanceof KpiDimension) {
+            KpiDimension kpi = (KpiDimension) dimension;
+            pstmt.setString(++i, kpi.getKpiName());
+        } 
+
     }
 
     /**
@@ -179,6 +191,28 @@ public class DimensionConverterImpl implements IDimensionConverter {
     private String[] buildBrowserSql() {
         String querySql = "SELECT `id` FROM `dimension_browser` WHERE `browser_name` = ? AND `browser_version` = ?";
         String insertSql = "INSERT INTO `dimension_browser`(`browser_name`, `browser_version`) VALUES(?, ?)";
+        return new String[] { querySql, insertSql };
+    }
+
+    /**
+     * 创建kpi dimension相关sql
+     * 
+     * @return
+     */
+    private String[] buildKpiSql() {
+        String querySql = "SELECT `id` FROM `dimension_kpi` WHERE `kpi_name` = ?";
+        String insertSql = "INSERT INTO `dimension_kpi`(`kpi_name`) VALUES(?)";
+        return new String[] { querySql, insertSql };
+    }
+
+    /**
+     * 创建location dimension相关sql
+     * 
+     * @return
+     */
+    private String[] buildLocationSql() {
+        String querySql = "SELECT `id` FROM `dimension_location` WHERE `country` = ? AND `province` = ? AND `city` = ?";
+        String insertSql = "INSERT INTO `dimension_location`(`country`,`province`,`city`) VALUES(?,?,?)";
         return new String[] { querySql, insertSql };
     }
 
