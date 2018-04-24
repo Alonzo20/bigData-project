@@ -15,7 +15,7 @@ import com.alonzo.common.EventLogConstants;
 /**
  * transformer相关mapper reducer job代码中mapper公用父类，主要提供计数和hbase value的获取
  * 
- * @author gerry
+ * @author alonzo
  *
  * @param <KEYOUT>
  * @param <VALUEOUT>

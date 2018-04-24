@@ -19,7 +19,7 @@ import com.alonzo.transformer.service.IDimensionConverter;
 /**
  * 定义pageview计算的具体输出代码
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class PageViewCollector implements IOutputCollector {

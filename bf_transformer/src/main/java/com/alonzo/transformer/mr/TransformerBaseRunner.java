@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 /**
  * 所有transformer相关mr程序入口类的公用父类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public abstract class TransformerBaseRunner implements Tool {

@@ -19,7 +19,7 @@ import com.alonzo.transformer.mr.TransformerBaseRunner;
  * 并且只获取pageview事件的数据<br/>
  * 将计算得到的pv值保存到stats_device_browser表中。
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class PageViewRunner extends TransformerBaseRunner {

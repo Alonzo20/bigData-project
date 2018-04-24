@@ -24,7 +24,7 @@ import com.alonzo.transformer.mr.TransformerBaseMapper;
  * 输入时hbase的数据，包括: platform、serverTime、browserName、browserVersion、url<br/>
  * 输出<StatsUserDimension, NullWritable>键值对，输出key中包含platform、date以及browser的维度信息
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class PageViewMapper extends TransformerBaseMapper<StatsUserDimension, NullWritable> {

@@ -15,7 +15,7 @@ import com.alonzo.transformer.model.value.reduce.MapWritableValue;
  * 统计website的page view数量的reducer类<br/>
  * 不涉及到去重，直接统计输入到reducer的同一组key中，value的个数。
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class PageViewReducer extends Reducer<StatsUserDimension, NullWritable, StatsUserDimension, MapWritableValue> {
