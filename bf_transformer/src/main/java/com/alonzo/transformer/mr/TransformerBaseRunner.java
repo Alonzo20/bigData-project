@@ -306,6 +306,11 @@ public abstract class TransformerBaseRunner implements Tool {
 		if (filter != null) {
 			scan.setFilter(filter);
 		}
+		
+        // 优化设置cache
+        scan.setBatch(500);
+        scan.setCacheBlocks(true); // 启动cache blocks
+        scan.setCaching(1000); // 设置每次返回的行数，默认值100，设置较大的值可以提高速度(减少rpc操作)，但是较大的值可能会导致内存异常。
 		return Lists.newArrayList(scan);
 	}
 

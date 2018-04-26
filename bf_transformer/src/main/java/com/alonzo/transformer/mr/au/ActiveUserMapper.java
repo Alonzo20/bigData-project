@@ -34,14 +34,16 @@ public class ActiveUserMapper extends TransformerBaseMapper<StatsUserDimension, 
 	private KpiDimension activeUserOfBrowserKpi = new KpiDimension(KpiType.BROWSER_ACTIVE_USER.name);
 	private KpiDimension hourlyActiveUserKpi = new KpiDimension(KpiType.HOURLY_ACTIVE_USER.name);
 
+    private String uuid,platform,serverTime,browser,browserVersion;
+	
 	@Override
 	protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
 		this.inputRecords++;
 
 		// 获取uuid&platform&serverTime，从hbase返回的结果集Result中
-		String uuid = this.getUuid(value);
-		String platform = this.getPlatform(value);
-		String serverTime = this.getServerTime(value);
+        this.uuid = this.getUuid(value);
+        this.platform = this.getPlatform(value);
+        this.serverTime = this.getServerTime(value);
 
 		// 过滤无效数据
 		if (StringUtils.isBlank(uuid) || StringUtils.isBlank(platform) || StringUtils.isBlank(serverTime) || !StringUtils.isNumeric(serverTime.trim())) {
@@ -58,8 +60,8 @@ public class ActiveUserMapper extends TransformerBaseMapper<StatsUserDimension, 
 		// 进行platform的构建
 		List<PlatformDimension> platforms = PlatformDimension.buildList(platform); // 进行platform创建
 		// 获取browser name和browser version
-		String browser = this.getBrowserName(value);
-		String browserVersion = this.getBrowserVersion(value);
+        this.browser = this.getBrowserName(value);
+        this.browserVersion = this.getBrowserVersion(value);
 		// 进行browser的维度信息构建
 		List<BrowserDimension> browsers = BrowserDimension.buildList(browser, browserVersion);
 
