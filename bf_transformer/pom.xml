@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alonzo</groupId>
-	<artifactId>bf_transformer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>transformer</artifactId>
+	<version>0.0.1</version>
 	<dependencies>
 		<!-- hadoop start -->
 		<dependency>
@@ -25,6 +25,14 @@
 			<version>0.98.6-hadoop2</version>
 		</dependency>
 		<!-- hbase end -->
+
+		<!-- hive start -->
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-exec</artifactId>
+			<version>0.13.1</version>
+		</dependency>
+		<!-- hive end -->
 
 		<!-- mysql start -->
 		<dependency>
