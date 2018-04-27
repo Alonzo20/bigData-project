@@ -14,8 +14,8 @@ CREATE TABLE `stats_view_depth_tmp`(`pl` string, `date` string, `col` string, `c
 -- 4. 编写UDF(platformdimension & datedimension)<需要注意，要删除DimensionConvertClient类中所有FileSystem关闭的操作>
 -- 5. 上传transformer-0.0.1.jar到hdfs的/alonzo/transformer文件夹中
 -- 6. 创建hive的function
-create function platform_convert as 'com.alonzo.transformer.hive.PlatformDimensionUDF' using jar 'hdfs://alonzo:8020/alonzo/transformer/transformer-0.0.1.jar';  
-create function date_convert as 'com.alonzo.transformer.hive.DateDimensionUDF' using jar 'hdfs://alonzo:8020/alonzo/transformer/transformer-0.0.1.jar';  
+create function platform_convert as 'com.alonzo.transformer.hive.PlatformDimensionUDF' using jar 'hdfs://hadoop:8020/alonzo/transformer/transformer-0.0.1.jar';  
+create function date_convert as 'com.alonzo.transformer.hive.DateDimensionUDF' using jar 'hdfs://hadoop:8020/alonzo/transformer/transformer-0.0.1.jar';  
 
 
 -- 7. hql编写(统计用户角度的浏览深度)<注意：时间为外部给定>
@@ -51,7 +51,7 @@ from tmp
 insert overwrite table stats_view_depth select platform_convert(pl),date_convert(date),5,sum(pv1),sum(pv2),sum(pv3),sum(pv4),sum(pv5_10),sum(pv10_30),sum(pv30_60),sum(pv60_plus),'2015-12-13' group by pl,date;
 
 -- 7. sqoop脚步编写(统计用户角度)
-sqoop export --connect jdbc:mysql://alonzo:3306/report --username hive --password hive --table stats_view_depth --export-dir /hive/bigdater.db/stats_view_depth/* --input-fields-terminated-by "\\01" --update-mode allowinsert --update-key platform_dimension_id,data_dimension_id,kpi_dimension_id
+sqoop export --connect jdbc:mysql://hadoop:3306/report --username hive --password hive --table stats_view_depth --export-dir /hive/bigdater.db/stats_view_depth/* --input-fields-terminated-by "\\01" --update-mode allowinsert --update-key platform_dimension_id,data_dimension_id,kpi_dimension_id
 
 -- 8. hql编写(统计会话角度的浏览深度)<注意：时间为外部给定>
 from (
@@ -86,6 +86,6 @@ from tmp
 insert overwrite table stats_view_depth select platform_convert(pl),date_convert(date),6,sum(pv1),sum(pv2),sum(pv3),sum(pv4),sum(pv5_10),sum(pv10_30),sum(pv30_60),sum(pv60_plus),'2015-12-13' group by pl,date;
 
 -- 9. sqoop脚步编写(统计会话角度)
-sqoop export --connect jdbc:mysql://alonzo:3306/report --username hive --password hive --table stats_view_depth --export-dir /hive/bigdater.db/stats_view_depth/* --input-fields-terminated-by "\\01" --update-mode allowinsert --update-key platform_dimension_id,data_dimension_id,kpi_dimension_id
+sqoop export --connect jdbc:mysql://hadoop:3306/report --username hive --password hive --table stats_view_depth --export-dir /hive/bigdater.db/stats_view_depth/* --input-fields-terminated-by "\\01" --update-mode allowinsert --update-key platform_dimension_id,data_dimension_id,kpi_dimension_id
 
 -- 10. shell脚步编写
