@@ -1,4 +1,4 @@
-package com.alonzo.transformer.service.impl;
+package com.alonzo.transformer.service.rpc.server;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.hadoop.ipc.ProtocolSignature;
 import org.apache.log4j.Logger;
 
 import com.alonzo.transformer.model.dim.base.BaseDimension;
@@ -19,7 +20,7 @@ import com.alonzo.transformer.model.dim.base.DateDimension;
 import com.alonzo.transformer.model.dim.base.KpiDimension;
 import com.alonzo.transformer.model.dim.base.LocationDimension;
 import com.alonzo.transformer.model.dim.base.PlatformDimension;
-import com.alonzo.transformer.service.IDimensionConverter;
+import com.alonzo.transformer.service.rpc.IDimensionConverter;
 
 public class DimensionConverterImpl implements IDimensionConverter {
 	private static final Logger logger = Logger.getLogger(DimensionConverterImpl.class);
@@ -45,7 +46,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
 
 	@Override
 	public int getDimensionIdByValue(BaseDimension dimension) throws IOException {
-		String cacheKey = this.buildCacheKey(dimension); // 获取cache key
+        String cacheKey = DimensionConverterImpl.buildCacheKey(dimension); // 获取cache key
 		if (this.cache.containsKey(cacheKey)) {
 			return this.cache.get(cacheKey);
 		}
@@ -105,7 +106,7 @@ public class DimensionConverterImpl implements IDimensionConverter {
 	 * @param dimension
 	 * @return
 	 */
-	private String buildCacheKey(BaseDimension dimension) {
+	public static String buildCacheKey(BaseDimension dimension) {
 		StringBuilder sb = new StringBuilder();
 		if (dimension instanceof DateDimension) {
 			sb.append("date_dimension");
@@ -275,6 +276,16 @@ public class DimensionConverterImpl implements IDimensionConverter {
 			}
 		}
 		throw new RuntimeException("从数据库获取id失败");
+	}
+
+	@Override
+	public long getProtocolVersion(String protocol, long clientVersion) throws IOException {
+		return IDimensionConverter.versionID;
+	}
+
+	@Override
+	public ProtocolSignature getProtocolSignature(String protocol, long clientVersion, int clientMethodsHash) throws IOException {
+		return null;
 	}
 
 }

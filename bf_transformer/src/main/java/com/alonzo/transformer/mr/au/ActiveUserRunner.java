@@ -71,7 +71,7 @@ public class ActiveUserRunner extends TransformerBaseRunner {
     /**
      * 自定义分区类
      * 
-     * @author gerry
+     * @author alonzo
      *
      */
     public static class ActiveUserPartitioner extends Partitioner<StatsUserDimension, TimeOutputValue> {

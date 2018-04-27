@@ -13,7 +13,7 @@ import com.alonzo.transformer.model.dim.base.BaseDimension;
 import com.alonzo.transformer.model.value.BaseStatsValueWritable;
 import com.alonzo.transformer.model.value.reduce.MapWritableValue;
 import com.alonzo.transformer.mr.IOutputCollector;
-import com.alonzo.transformer.service.IDimensionConverter;
+import com.alonzo.transformer.service.rpc.IDimensionConverter;
 
 public class ActiveUserCollector implements IOutputCollector {
 

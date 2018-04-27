@@ -10,7 +10,7 @@ import com.alonzo.transformer.model.value.map.TimeOutputValue;
 /**
  * combine类
  * 
- * @author gerry
+ * @author alonzo
  *
  */
 public class ActiveUserCombine extends Reducer<StatsUserDimension, TimeOutputValue, StatsUserDimension, TimeOutputValue> {

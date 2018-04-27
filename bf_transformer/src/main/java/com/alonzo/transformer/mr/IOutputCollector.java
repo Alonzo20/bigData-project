@@ -8,7 +8,7 @@ import org.apache.hadoop.conf.Configuration;
 
 import com.alonzo.transformer.model.dim.base.BaseDimension;
 import com.alonzo.transformer.model.value.BaseStatsValueWritable;
-import com.alonzo.transformer.service.IDimensionConverter;
+import com.alonzo.transformer.service.rpc.IDimensionConverter;
 
 /**
  * 自定义的配合自定义output进行具体sql输出的类

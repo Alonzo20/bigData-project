@@ -21,8 +21,8 @@ import com.alonzo.common.GlobalConstants;
 import com.alonzo.common.KpiType;
 import com.alonzo.transformer.model.dim.base.BaseDimension;
 import com.alonzo.transformer.model.value.BaseStatsValueWritable;
-import com.alonzo.transformer.service.IDimensionConverter;
-import com.alonzo.transformer.service.impl.DimensionConverterImpl;
+import com.alonzo.transformer.service.rpc.IDimensionConverter;
+import com.alonzo.transformer.service.rpc.server.DimensionConverterImpl;
 import com.alonzo.util.JdbcManager;
 
 /**
