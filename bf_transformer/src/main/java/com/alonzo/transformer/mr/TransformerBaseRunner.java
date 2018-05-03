@@ -144,7 +144,7 @@ public abstract class TransformerBaseRunner implements Tool {
 		// Configuration的执行顺序是：按照resource的添加(add)顺序添加的，后面添加的会覆盖前面添加的。
 		// 但是有一点需要注意，就是如果某一个值已经在内存中了(从文件中读入到内存), 那么此时在今天添加文件操作，不会产生覆盖效果。
 		// 假设: a.xml文件中有一对key/value是fs.defaultFS=file:///;
-		// b.xml文件中有一对key/value是fs.defaultFS=hdfs://hh:8020:
+		// b.xml文件中有一对key/value是fs.defaultFS=hdfs://hadoop:8020:
 		// 执行顺序，1. 添加a.xml文件；2. 获取fs.defaultFS值；3.添加b.xml文件; 4. 获取fs.defaultFs的值
 		// 结果: 2和4都是返回的是file:///
 
