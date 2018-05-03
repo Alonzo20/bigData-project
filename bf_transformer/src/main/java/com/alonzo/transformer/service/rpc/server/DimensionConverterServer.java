@@ -22,19 +22,19 @@ import com.alonzo.transformer.service.rpc.IDimensionConverter;
  *
  */
 public class DimensionConverterServer {
-	public static final String CONFIG_SAVE_PATH = "/alonzo/transformer/rpc/config";
-	private static final Logger logger = Logger.getLogger(DimensionConverterServer.class);
-	private AtomicBoolean isRunning = new AtomicBoolean(false); // 标识是否启动
-	private Server server = null;// 服务对象
-	private Configuration conf = null;
-	
-	public static void main(String[] args) {
-		Configuration conf = new Configuration();
-		DimensionConverterServer dcs = new DimensionConverterServer(conf);
-		dcs.startServer();
-	}
-	
-	public DimensionConverterServer(Configuration conf) {
+    public static final String CONFIG_SAVE_PATH = "/alonzo/transformer/rpc/config";
+    private static final Logger logger = Logger.getLogger(DimensionConverterServer.class);
+    private AtomicBoolean isRunning = new AtomicBoolean(false); // 标识是否启动
+    private Server server = null;// 服务对象
+    private Configuration conf = null;
+
+    public static void main(String[] args) {
+        Configuration conf = new Configuration();
+        DimensionConverterServer dcs = new DimensionConverterServer(conf);
+        dcs.startServer();
+    }
+
+    public DimensionConverterServer(Configuration conf) {
         this.conf = conf;
 
         // 添加一个钩子，进行关闭操作
@@ -177,5 +177,4 @@ public class DimensionConverterServer {
             }
         }
     }
-
 }
